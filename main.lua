@@ -64,11 +64,18 @@ function love.update(dt)
 	end
 	
 	-- wait for input
-	Match543()
+	DetectInput()
+	
+	
+	---Match543()
 	
 	if love.keyboard.isDown('escape') then
 		love.event.quit()
 	end
+end
+
+function DetectInput()
+	
 end
 
 function detect_click (x, y, w, h)
