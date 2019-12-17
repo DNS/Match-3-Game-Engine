@@ -239,7 +239,7 @@ end
 -- tell all pieces above this one to move down
 
 
--- animate fall
+--[[ animate fall
 function AnimateGemsFall(dt)
 	--gem_fall
 	for x = 8, 1, -1 do
@@ -257,6 +257,7 @@ function AnimateGemsFall(dt)
 		end
 	end
 end
+]]
 
 local ShiftDown = false
 -- Gems shift down animation
@@ -264,7 +265,7 @@ function ShiftDownAnimate(dt)
 	
 end
 
--- start animated swap of two pieces
+-- add input, start animated swap of two pieces
 
 -- tell all pieces above this one to move down
 
