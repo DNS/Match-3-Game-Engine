@@ -37,6 +37,9 @@ function love.load()
 			gems[y][x].pos_y = (y-1) * gem_size + start_y
 			gems[y][x].fall = false
 			gems[y][x].removed = false
+			gems[y][x].diff_x = 0
+			gems[y][x].diff_y = 0
+			gems[y][x].mouse_hold = 0
 		end
 	end
 
