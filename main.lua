@@ -35,8 +35,13 @@ function love.load()
 			gems[y][x].color = love.math.random(1, 6)
 			gems[y][x].pos_x = (x-1) * gem_size + start_x
 			gems[y][x].pos_y = (y-1) * gem_size + start_y
+			gems[y][x].width = gem_size
+			gems[y][x].height = gem_size
+			
 			gems[y][x].fall = false
 			gems[y][x].removed = false
+			
+			-- mouse/touch dragging
 			gems[y][x].diff_x = 0
 			gems[y][x].diff_y = 0
 			gems[y][x].mouse_hold = 0
@@ -54,7 +59,7 @@ function love.draw()
 	for y = 1, 8 do
 		for x = 1, 8 do
 			love.graphics.setColor(gem_color[gems[y][x].color])
-			love.graphics.rectangle('fill', gems[y][x].pos_x, gems[y][x].pos_y, gem_size, gem_size)
+			love.graphics.rectangle('fill', gems[y][x].pos_x, gems[y][x].pos_y, gems[y][x].width, gems[y][x].height)
 		end
 	end
 end
