@@ -44,7 +44,7 @@ function love.load()
 			-- mouse/touch dragging
 			gems[y][x].diff_x = 0
 			gems[y][x].diff_y = 0
-			gems[y][x].mouse_hold = 0
+			gems[y][x].mouse_hold = false
 		end
 	end
 
