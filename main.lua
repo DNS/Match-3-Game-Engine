@@ -5,6 +5,7 @@
 
 local debug_str, gem_color, gems, gem_size, new_game
 local start_x, start_y
+local info = {}
 
 debug_str = ''
 
@@ -24,6 +25,8 @@ gem_size = 30 -- pixels
 -- x,y dimension for each stage ?
 
 function love.load()
+	load_info()
+	
 	start_x = (love.graphics.getWidth() - gem_size * 8) / 2
 	start_y = (love.graphics.getHeight() - gem_size * 8) / 1.9
 
@@ -48,8 +51,10 @@ function love.load()
 		end
 	end
 
-	--debug_str = gems[1][1].color ..','.. gems[1][2].color ..','.. gems[1][3].color
 
+	--debug_str = info.resolution_x .. 'x' .. info.resolution_y
+
+	
 	new_game = true
 end
 
@@ -94,6 +99,14 @@ function detect_click (x, y, w, h)
 	else
 		return false
 	end
+end
+
+function load_info()
+	info.OS = love.system.getOS()
+	info.CPU_count = love.system.getProcessorCount()
+	info.power = love.system.getPowerInfo()
+	info.resolution_x = love.graphics.getWidth()
+	info.resolution_y = love.graphics.getHeight()
 end
 
 function Match3InitReplace()
