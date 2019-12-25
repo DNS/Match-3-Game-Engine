@@ -30,24 +30,26 @@ function love.load()
 	start_x = (love.graphics.getWidth() - gem_size * 8) / 2
 	start_y = (love.graphics.getHeight() - gem_size * 8) / 1.9
 
-	-- init gem
-	for y = 1, 8 do
-		gems[y] = {}
-		for x = 1, 8 do
-			gems[y][x] = {}
-			gems[y][x].color = love.math.random(1, 6)
-			gems[y][x].pos_x = (x-1) * gem_size + start_x
-			gems[y][x].pos_y = (y-1) * gem_size + start_y
-			gems[y][x].width = gem_size
-			gems[y][x].height = gem_size
+	-- init gem: 
+	-- y -> j
+	-- x -> i
+	for j = 1, 8 do
+		gems[j] = {}
+		for i = 1, 8 do
+			gems[j][i] = {}
+			gems[j][i].color = love.math.random(1, 6)
+			gems[j][i].x = (i-1) * gem_size + start_x
+			gems[j][i].y = (j-1) * gem_size + start_y
+			gems[j][i].w = gem_size
+			gems[j][i].h = gem_size
 			
-			gems[y][x].fall = false
-			gems[y][x].removed = false
+			gems[j][i].fall = false
+			gems[j][i].removed = false
 			
 			-- mouse/touch dragging
-			gems[y][x].diff_x = 0
-			gems[y][x].diff_y = 0
-			gems[y][x].mouse_hold = false
+			gems[j][i].diff_x = 0
+			gems[j][i].diff_y = 0
+			gems[j][i].mouse_hold = false
 		end
 	end
 
@@ -61,10 +63,10 @@ end
 function love.draw()
 	love.graphics.setColor(255,255,255,255)	-- white
 	love.graphics.print(debug_str)
-	for y = 1, 8 do
-		for x = 1, 8 do
-			love.graphics.setColor(gem_color[gems[y][x].color])
-			love.graphics.rectangle('fill', gems[y][x].pos_x, gems[y][x].pos_y, gems[y][x].width, gems[y][x].height)
+	for j = 1, 8 do
+		for i = 1, 8 do
+			love.graphics.setColor(gem_color[gems[j][i].color])
+			love.graphics.rectangle('fill', gems[j][i].x, gems[j][i].y, gems[j][i].w, gems[j][i].h)
 		end
 	end
 end
@@ -111,68 +113,68 @@ end
 
 function Match3InitReplace()
 	-- check horizontal
-	for y = 1, 8 do
-		for x = 1, 6 do
-			if gems[y][x].color == gems[y][x+1].color and gems[y][x].color == gems[y][x+2].color then
+	for j = 1, 8 do
+		for i = 1, 6 do
+			if gems[j][i].color == gems[j][i+1].color and gems[j][i].color == gems[j][i+2].color then
 				local remove_gems = {}
 				local colors = {1, 2, 3, 4, 5, 6}
 				
-				if y == 1 then
-					table.insert(remove_gems, gems[y][x+1].color)
-					table.insert(remove_gems, gems[y+1][x+1].color)
-				elseif y == 8 then
-					table.insert(remove_gems, gems[y][x+1].color)
-					table.insert(remove_gems, gems[y-1][x+1].color)
+				if j == 1 then
+					table.insert(remove_gems, gems[j][i+1].color)
+					table.insert(remove_gems, gems[j+1][i+1].color)
+				elseif j == 8 then
+					table.insert(remove_gems, gems[j][i+1].color)
+					table.insert(remove_gems, gems[j-1][i+1].color)
 				else
-					table.insert(remove_gems, gems[y][x+1].color)
-					table.insert(remove_gems, gems[y-1][x+1].color)
-					table.insert(remove_gems, gems[y+1][x+1].color)
+					table.insert(remove_gems, gems[j][i+1].color)
+					table.insert(remove_gems, gems[j-1][i+1].color)
+					table.insert(remove_gems, gems[j+1][i+1].color)
 				end
 				
-				for i = 1, #remove_gems do
-					for j = 1, #colors do
-						if colors[j] == remove_gems[i] then
-							table.remove(colors, j)
+				for k = 1, #remove_gems do
+					for l = 1, #colors do
+						if colors[l] == remove_gems[k] then
+							table.remove(colors, l)
 						end
 					end
 				end
 				
 				local r = love.math.random(1, #colors)
-				gems[y][x+1].color = colors[r]
+				gems[j][i+1].color = colors[r]
 			end
 		end
 	end
 
 	--------------------------
 	-- check vertical
-	for x = 1, 8 do
-		for y = 1, 6 do
-			if gems[y][x].color == gems[y+1][x].color and gems[y][x].color == gems[y+2][x].color then
+	for i = 1, 8 do
+		for j = 1, 6 do
+			if gems[j][i].color == gems[j+1][i].color and gems[j][i].color == gems[j+2][i].color then
 				local remove_gems = {}
 				local colors = {1, 2, 3, 4, 5, 6}
 				
-				if x == 1 then
-					table.insert(remove_gems, gems[y+1][x].color)
-					table.insert(remove_gems, gems[y+1][x+1].color)
-				elseif x == 8 then
-					table.insert(remove_gems, gems[y+1][1].color)
-					table.insert(remove_gems, gems[y+1][x-1].color)
+				if i == 1 then
+					table.insert(remove_gems, gems[j+1][i].color)
+					table.insert(remove_gems, gems[j+1][i+1].color)
+				elseif i == 8 then
+					table.insert(remove_gems, gems[j+1][1].color)
+					table.insert(remove_gems, gems[j+1][i-1].color)
 				else
-					table.insert(remove_gems, gems[y+1][x].color)
-					table.insert(remove_gems, gems[y+1][x-1].color)
-					table.insert(remove_gems, gems[y+1][x+1].color)
+					table.insert(remove_gems, gems[j+1][i].color)
+					table.insert(remove_gems, gems[j+1][i-1].color)
+					table.insert(remove_gems, gems[j+1][i+1].color)
 				end
 				
-				for i = 1, #remove_gems do
-					for j = 1, #colors do
-						if colors[j] == remove_gems[i] then
-							table.remove(colors, j)
+				for k = 1, #remove_gems do
+					for l = 1, #colors do
+						if colors[l] == remove_gems[k] then
+							table.remove(colors, l)
 						end
 					end
 				end
 				
 				local r = love.math.random(1, #colors)
-				gems[y+1][x].color = colors[r]
+				gems[j+1][i].color = colors[r]
 			end
 		end
 	end
@@ -180,15 +182,15 @@ end
 
 -- if no matches found return false, maybe the game is over?
 function Match3PossibleMove()
-	for y = 1, 6 do
-		for x = 1, 6 do
+	for j = 1, 6 do
+		for i = 1, 6 do
 			-- check horizontal
-			if gems[y][x].color == gems[y][x+1].color and gems[y][x].color == gems[y][x+2].color then
+			if gems[j][i].color == gems[y][x+1].color and gems[j][i].color == gems[j][i+2].color then
 				return true
 			end
 			
 			-- check vertical
-			if gems[y][x].color == gems[y+1][x].color and gems[y][x].color == gems[y+2][x].color then
+			if gems[j][i].color == gems[j+1][i].color and gems[j][i].color == gems[j+2][i].color then
 				return true
 			end
 		end
@@ -201,54 +203,54 @@ end
 -- add new gem on top & spawn new gem from top and animate the fall/gravity
 function Match543()
 	-- match 5 horizontal
-	for y = 1, 8 do
-		for x = 1, 4 do
-			if gems[y][x].color == gems[y][x+1].color and gems[y][x].color == gems[y][x+2].color and gems[y][x].color == gems[y][x+3].color and gems[y][x].color == gems[y][x+4].color then
+	for j = 1, 8 do
+		for i = 1, 4 do
+			if gems[j][i].color == gems[j][i+1].color and gems[j][i].color == gems[j][i+2].color and gems[j][i].color == gems[j][i+3].color and gems[j][i].color == gems[j][i+4].color then
 				
 			end
 		end
 	end
 	
 	-- match 5 vertical
-	for x = 1, 8 do
-		for y = 1, 4 do
-			if gems[y][x].color == gems[y+1][x].color and gems[y][x].color == gems[y+2][x].color and gems[y][x].color == gems[y+3][x].color and gems[y][x].color == gems[y+4][x].color then
+	for j = 1, 8 do
+		for i = 1, 4 do
+			if gems[j][i].color == gems[j+1][i].color and gems[j][i].color == gems[j+2][i].color and gems[j][i].color == gems[j+3][i].color and gems[j][i].color == gems[j+4][i].color then
 				
 			end
 		end
 	end
 	
 	-- match 4 horizontal
-	for y = 1, 8 do
-		for x = 1, 5 do
-			if gems[y][x].color == gems[y][x+1].color and gems[y][x].color == gems[y][x+2].color and gems[y][x].color == gems[y][x+3].color then
+	for j = 1, 8 do
+		for i = 1, 5 do
+			if gems[j][i].color == gems[j][i+1].color and gems[j][i].color == gems[j][i+2].color and gems[j][i].color == gems[j][i+3].color then
 				
 			end
 		end
 	end
 	
 	-- match 4 vertical
-	for x = 1, 8 do
-		for y = 1, 5 do
-			if gems[y][x].color == gems[y+1][x].color and gems[y][x].color == gems[y+2][x].color and gems[y][x].color == gems[y+3][x].color then
+	for i = 1, 8 do
+		for j = 1, 5 do
+			if gems[j][i].color == gems[j+1][i].color and gems[j][i].color == gems[j+2][i].color and gems[j][i].color == gems[j+3][i].color then
 				
 			end
 		end
 	end
 	
 	-- match 3 horizontal
-	for y = 1, 8 do
-		for x = 1, 6 do
-			if gems[y][x].color == gems[y][x+1].color and gems[y][x].color == gems[y][x+2].color then
+	for j = 1, 8 do
+		for i = 1, 6 do
+			if gems[j][i].color == gems[j][i+1].color and gems[j][i].color == gems[j][i+2].color then
 				--debug_str = 'match 3 horizontal'
 			end
 		end
 	end
 	
 	-- match 3 vertical
-	for x = 1, 8 do
-		for y = 1, 6 do
-			if gems[y][x].color == gems[y+1][x].color and gems[y][x].color == gems[y+2][x].color then
+	for i = 1, 8 do
+		for j = 1, 6 do
+			if gems[j][i].color == gems[j+1][i].color and gems[j][i].color == gems[j+2][i].color then
 				--debug_str = 'match 3 vertical'
 			end
 		end
@@ -263,16 +265,16 @@ end
 --[[ animate fall
 function AnimateGemsFall(dt)
 	--gem_fall
-	for x = 8, 1, -1 do
-		for y = 8, 1, -1 do
-			if gems[y][x].fall then
-				if y == 8 then
+	for i = 8, 1, -1 do
+		for j = 8, 1, -1 do
+			if gems[j][i].fall then
+				if j == 8 then
 					
-				elseif y <= 7 and gems[y][x].fall and (gems[y][x].pos_y+gem_size+1*dt) < gems[y+1][x].pos_y then
-					gems[y][x].pos_y = gems[y][x].pos_y + 1*dt
+				elseif j <= 7 and gems[j][i].fall and (gems[j][i].y+gem_size+1*dt) < gems[j+1][i].y then
+					gems[j][i].y = gems[j][i].y + 1*dt
 				else
-					gems[y][x].pos_y = gems[y+1][x].pos_y - gem_size
-					gems[y][x].fall = false
+					gems[j][i].y = gems[j+1][i].y - gem_size
+					gems[j][i].fall = false
 				end
 			end
 		end
