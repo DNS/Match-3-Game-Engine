@@ -29,7 +29,7 @@ function love.load()
 	
 	start_x = (love.graphics.getWidth() - gem_size * 8) / 2
 	start_y = (love.graphics.getHeight() - gem_size * 8) / 1.9
-
+	
 	-- init gem: 
 	-- y -> j
 	-- x -> i
