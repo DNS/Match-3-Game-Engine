@@ -106,17 +106,12 @@ function DetectInput()
 	
 			if love.mouse.isDown(1) and point_is_inside(mx,my,  gems[j][i].x, gems[j][i].y, gems[j][i].w, gems[j][i].h) and not mouse_isDown_previous then
 				drag = true
-				--tx, ty, tw, th = x2, y2, w2, h2
-				
 				cj, ci = j, i		-- clicked gem array index
 				exit_loop = true
 				break
-			--elseif love.mouse.isDown(1) and (not point_is_inside(mx,my, gems[j][i].x, gems[j][i].y, gems[j][i].w, gems[j][i].h) ) then
+			elseif love.mouse.isDown(1) and (not point_is_inside(mx,my, gems[j][i].x, gems[j][i].y, gems[j][i].w, gems[j][i].h) ) then
 			--	drag = false
 			--	debug_str = '222'
-			elseif not love.mouse.isDown(1) then
-				drag = false
-				debug_str = '333'
 			end
 			
 			
@@ -124,16 +119,20 @@ function DetectInput()
 		if exit_loop then break end
 	end	-- for j
 	
+	if not love.mouse.isDown(1) then
+		drag = false
+		debug_str = '333'
+	end
 	
 	-- add +500 px detection
 	local hit = 500
-	if drag and ci < 8 and point_is_inside(mx,my,   gems[cj][ci+1].x, gems[cj][ci+1].y, gems[cj][ci+1].w+hit, gems[cj][ci+1].h) then			-- right
+	if drag and ci < 8 and point_is_inside(mx,my, gems[cj][ci+1].x, gems[cj][ci+1].y, gems[cj][ci+1].w+hit, gems[cj][ci+1].h) then			-- right
 		debug_str = 'Gem moved right!'
-	elseif drag and ci > 1 and point_is_inside(mx,my,   gems[cj][ci-1].x-hit, gems[cj][ci-1].y, gems[cj][ci-1].w+hit, gems[cj][ci-1].h) then	-- left
+	elseif drag and ci > 1 and point_is_inside(mx,my, gems[cj][ci-1].x-hit, gems[cj][ci-1].y, gems[cj][ci-1].w+hit, gems[cj][ci-1].h) then	-- left
 		debug_str = 'Gem moved left!'
-	elseif drag and cj < 8 and point_is_inside(mx,my,   gems[cj+1][ci].x, gems[cj+1][ci].y, gems[cj+1][ci].w, gems[cj+1][ci].h+hit) then		-- down
+	elseif drag and cj < 8 and point_is_inside(mx,my, gems[cj+1][ci].x, gems[cj+1][ci].y, gems[cj+1][ci].w, gems[cj+1][ci].h+hit) then		-- down
 		debug_str = 'Gem moved down!'
-	elseif drag and cj > 1 and point_is_inside(mx,my,   gems[cj-1][ci].x, gems[cj-1][ci].y-hit, gems[cj-1][ci].w, gems[cj-1][ci].h+hit) then	-- up
+	elseif drag and cj > 1 and point_is_inside(mx,my, gems[cj-1][ci].x, gems[cj-1][ci].y-hit, gems[cj-1][ci].w, gems[cj-1][ci].h+hit) then	-- up
 		debug_str = 'Gem moved up!'
 	end
 	
