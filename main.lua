@@ -7,6 +7,12 @@ local debug_str, gem_color, gems, gem_size, new_game
 local start_x, start_y
 local info = {}
 
+local mx, my
+local drag = false
+local mouse_isDown_previous = false
+local ci = 0		-- clicked gem array index (gem move detection)
+local cj = 0		-- clicked gem array index (gem move detection)
+
 debug_str = ''
 
 gem_color = {
@@ -76,11 +82,12 @@ function love.update(dt)
 	if new_game then
 		new_game = false
 		Match3InitReplace()
+	else
+	
+	
+		-- wait for input
+		DetectInput()
 	end
-	
-	-- wait for input
-	DetectInput()
-	
 	
 	---Match543()
 	
@@ -90,8 +97,58 @@ function love.update(dt)
 end
 
 function DetectInput()
+	local exit_loop = false
+	mx = love.mouse.getX()
+	my = love.mouse.getY()
+	
+	for j = 1, 8 do
+		for i = 1, 8 do
+	
+			if love.mouse.isDown(1) and point_is_inside(mx,my,  gems[j][i].x, gems[j][i].y, gems[j][i].w, gems[j][i].h) and not mouse_isDown_previous then
+				drag = true
+				--tx, ty, tw, th = x2, y2, w2, h2
+				
+				cj, ci = j, i		-- clicked gem array index
+				exit_loop = true
+				break
+			--elseif love.mouse.isDown(1) and (not point_is_inside(mx,my, gems[j][i].x, gems[j][i].y, gems[j][i].w, gems[j][i].h) ) then
+			--	drag = false
+			--	debug_str = '222'
+			elseif not love.mouse.isDown(1) then
+				drag = false
+				debug_str = '333'
+			end
+			
+			
+		end	-- for i
+		if exit_loop then break end
+	end	-- for j
+	
+	
+	-- add +500 px detection
+	local hit = 500
+	if drag and ci < 8 and point_is_inside(mx,my,   gems[cj][ci+1].x, gems[cj][ci+1].y, gems[cj][ci+1].w+hit, gems[cj][ci+1].h) then			-- right
+		debug_str = 'Gem moved right!'
+	elseif drag and ci > 1 and point_is_inside(mx,my,   gems[cj][ci-1].x-hit, gems[cj][ci-1].y, gems[cj][ci-1].w+hit, gems[cj][ci-1].h) then	-- left
+		debug_str = 'Gem moved left!'
+	elseif drag and cj < 8 and point_is_inside(mx,my,   gems[cj+1][ci].x, gems[cj+1][ci].y, gems[cj+1][ci].w, gems[cj+1][ci].h+hit) then		-- down
+		debug_str = 'Gem moved down!'
+	elseif drag and cj > 1 and point_is_inside(mx,my,   gems[cj-1][ci].x, gems[cj-1][ci].y-hit, gems[cj-1][ci].w, gems[cj-1][ci].h+hit) then	-- up
+		debug_str = 'Gem moved up!'
+	end
+	
+	mouse_isDown_previous = love.mouse.isDown(1)
 	
 end
+
+function point_is_inside(px,py, x,y,w,h)
+	if px >= x and px <= x+w and py >= y and py <= y+h then
+		return true
+	else
+		return false
+	end
+end
+
 
 function detect_click (x, y, w, h)
 	if not love.mouse.isDown(1) then return false end
