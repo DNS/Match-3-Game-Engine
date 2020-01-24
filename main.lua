@@ -30,7 +30,7 @@ gem_size = 30 -- pixels
 
 -- x,y dimension for each stage ?
 
-function love.load()
+function love.load ()
 	load_info()
 	
 	start_x = (love.graphics.getWidth() - gem_size * 8) / 2
@@ -66,7 +66,7 @@ function love.load()
 	new_game = true
 end
 
-function love.draw()
+function love.draw ()
 	love.graphics.setColor(255,255,255,255)	-- white
 	love.graphics.print(debug_str)
 	for j = 1, 8 do
@@ -77,7 +77,7 @@ function love.draw()
 	end
 end
 
-function love.update(dt)
+function love.update (dt)
 	--debug_str = '343'
 	if new_game then
 		new_game = false
@@ -96,7 +96,7 @@ function love.update(dt)
 	end
 end
 
-function DetectInput()
+function DetectInput ()
 	local exit_loop = false
 	mx = love.mouse.getX()
 	my = love.mouse.getY()
@@ -159,7 +159,7 @@ function detect_click (x, y, w, h)
 	end
 end
 
-function load_info()
+function load_info ()
 	info.OS = love.system.getOS()
 	info.CPU_count = love.system.getProcessorCount()
 	info.power = love.system.getPowerInfo()
@@ -167,7 +167,7 @@ function load_info()
 	info.resolution_y = love.graphics.getHeight()
 end
 
-function Match3InitReplace()
+function Match3InitReplace ()
 	-- check horizontal
 	for j = 1, 8 do
 		for i = 1, 6 do
@@ -237,7 +237,7 @@ function Match3InitReplace()
 end
 
 -- if no matches found return false, maybe the game is over?
-function Match3PossibleMove()
+function Match3PossibleMove ()
 	for j = 1, 6 do
 		for i = 1, 6 do
 			-- check horizontal
@@ -257,7 +257,7 @@ end
 
 -- Match543: match, fade/remove, shift upper gem to empty cell,
 -- add new gem on top & spawn new gem from top and animate the fall/gravity
-function Match543()
+function Match543 ()
 	-- match 5 horizontal
 	for j = 1, 8 do
 		for i = 1, 4 do
@@ -319,7 +319,7 @@ end
 
 
 --[[ animate fall
-function AnimateGemsFall(dt)
+function AnimateGemsFall (dt)
 	--gem_fall
 	for i = 8, 1, -1 do
 		for j = 8, 1, -1 do
@@ -340,7 +340,7 @@ end
 
 local ShiftDown = false
 -- Gems shift down animation
-function ShiftDownAnimate(dt)
+function ShiftDownAnimate (dt)
 	
 end
 
