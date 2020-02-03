@@ -21,7 +21,7 @@ gem_color = {
 	[3] = {0, 255, 0, 255},		-- 3: GREEN
 	[4] = {255, 255, 0, 255},	-- 4: YELLOW
 	[5] = {255, 128, 0, 255},	-- 5: ORANGE
-	[6] = {255, 0, 255, 255}	-- 6: PURPLE
+	[6] = {255, 0, 255, 255},	-- 6: PURPLE
 	--[7] = {255, 255, 255, 0}	-- 7: TRANSPARENT
 }
 
@@ -83,27 +83,50 @@ function love.update (dt)
 		new_game = false
 		Match3InitReplace()
 	else
-	
-	
 		-- wait for input
 		DetectInput()
 	end
 	
 	---Match543()
-	
 	if love.keyboard.isDown('escape') then
 		love.event.quit()
 	end
 end
 
+function SwapGem (direction, j, i)
+	local tmp
+	debug_str = j .. ', ' .. i
+	--[[
+	if direction == 'right' then
+		tmp = gems[j][i].color
+		gems[j][i].color = gems[j][i+1].color
+		gems[j][i+1].color = tmp
+	elseif direction == 'left' then
+		tmp = gems[j][i].color
+		gems[j][i].color = gems[j][i-1].color
+		gems[j][i-1].color = tmp
+	elseif direction == 'down' then
+		tmp = gems[j][i].color
+		gems[j][i].color = gems[j+1][i].color
+		gems[j+1][i].color = tmp
+	elseif direction == 'up' then
+		tmp = gems[j][i].color
+		gems[j][i].color = gems[j-1][i].color
+		gems[j-1][i].color = tmp
+	end]]
+end
+
 function DetectInput ()
-	local exit_loop = false
+	local hit, exit_loop, tmp
+	
+	hit = 500		-- add +500 px detection
+	swap = false
+	exit_loop = false
 	mx = love.mouse.getX()
 	my = love.mouse.getY()
 	
 	for j = 1, 8 do
 		for i = 1, 8 do
-	
 			if love.mouse.isDown(1) and point_is_inside(mx,my,  gems[j][i].x, gems[j][i].y, gems[j][i].w, gems[j][i].h) and not mouse_isDown_previous then
 				drag = true
 				cj, ci = j, i		-- clicked gem array index
@@ -111,10 +134,8 @@ function DetectInput ()
 				break
 			elseif love.mouse.isDown(1) and (not point_is_inside(mx,my, gems[j][i].x, gems[j][i].y, gems[j][i].w, gems[j][i].h) ) then
 			--	drag = false
-			--	debug_str = '222'
+				debug_str = '222'
 			end
-			
-			
 		end	-- for i
 		if exit_loop then break end
 	end	-- for j
@@ -122,25 +143,33 @@ function DetectInput ()
 	if not love.mouse.isDown(1) then
 		drag = false
 		debug_str = '333'
+		--debug_str = cj .. ', ' .. ci
 	end
 	
-	-- add +500 px detection
-	local hit = 500
-	if drag and ci < 8 and point_is_inside(mx,my, gems[cj][ci+1].x, gems[cj][ci+1].y, gems[cj][ci+1].w+hit, gems[cj][ci+1].h) then			-- right
-		debug_str = 'Gem moved right!'
+	if drag and ci < 8 and point_is_inside(mx,my, gems[cj][ci+1].x, gems[cj][ci+1].y, gems[cj][ci+1].w+hit, gems[cj][ci+1].h) then	-- right
+		--debug_str = 'Gem moved right!'
+		--wait for up
+		tmp = gems[cj][ci].color
+		gems[cj][ci].color = gems[cj][ci+1].color
+		gems[cj][ci+1].color = tmp
 	elseif drag and ci > 1 and point_is_inside(mx,my, gems[cj][ci-1].x-hit, gems[cj][ci-1].y, gems[cj][ci-1].w+hit, gems[cj][ci-1].h) then	-- left
-		debug_str = 'Gem moved left!'
+		--debug_str = 'Gem moved left!'
+		
 	elseif drag and cj < 8 and point_is_inside(mx,my, gems[cj+1][ci].x, gems[cj+1][ci].y, gems[cj+1][ci].w, gems[cj+1][ci].h+hit) then		-- down
-		debug_str = 'Gem moved down!'
+		--debug_str = 'Gem moved down!'
+		
 	elseif drag and cj > 1 and point_is_inside(mx,my, gems[cj-1][ci].x, gems[cj-1][ci].y-hit, gems[cj-1][ci].w, gems[cj-1][ci].h+hit) then	-- up
-		debug_str = 'Gem moved up!'
+		--debug_str = 'Gem moved up!'
+		
+	else
+		
 	end
 	
 	mouse_isDown_previous = love.mouse.isDown(1)
 	
 end
 
-function point_is_inside(px,py, x,y,w,h)
+function point_is_inside (px,py, x,y,w,h)
 	if px >= x and px <= x+w and py >= y and py <= y+h then
 		return true
 	else
@@ -168,12 +197,13 @@ function load_info ()
 end
 
 function Match3InitReplace ()
+	local random_color, remove_gems, colors
 	-- check horizontal
 	for j = 1, 8 do
 		for i = 1, 6 do
 			if gems[j][i].color == gems[j][i+1].color and gems[j][i].color == gems[j][i+2].color then
-				local remove_gems = {}
-				local colors = {1, 2, 3, 4, 5, 6}
+				remove_gems = {}
+				colors = {1, 2, 3, 4, 5, 6}
 				
 				if j == 1 then
 					table.insert(remove_gems, gems[j][i+1].color)
@@ -195,19 +225,18 @@ function Match3InitReplace ()
 					end
 				end
 				
-				local r = love.math.random(1, #colors)
-				gems[j][i+1].color = colors[r]
+				random_color = love.math.random(1, #colors)
+				gems[j][i+1].color = colors[random_color]
 			end
 		end
 	end
-
-	--------------------------
+	
 	-- check vertical
 	for i = 1, 8 do
 		for j = 1, 6 do
 			if gems[j][i].color == gems[j+1][i].color and gems[j][i].color == gems[j+2][i].color then
-				local remove_gems = {}
-				local colors = {1, 2, 3, 4, 5, 6}
+				remove_gems = {}
+				colors = {1, 2, 3, 4, 5, 6}
 				
 				if i == 1 then
 					table.insert(remove_gems, gems[j+1][i].color)
@@ -229,8 +258,8 @@ function Match3InitReplace ()
 					end
 				end
 				
-				local r = love.math.random(1, #colors)
-				gems[j+1][i].color = colors[r]
+				random_color = love.math.random(1, #colors)
+				gems[j+1][i].color = colors[random_color]
 			end
 		end
 	end
